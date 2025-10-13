@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('counties', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('description');
+            $table->integer('nr_dysp');
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
