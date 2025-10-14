@@ -20,16 +20,53 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'username' => 'admin',
-            'surname' => 'admin',
-            'name' => 'admin',
-            'role' => 10,
+            'name' => 'Admin',
+            'surname' => 'Administrator',
+            'email' => 'admin@poznan.uw.gov.pl',
             'password' => Hash::make('abcd1234'),
             'county_id' => 3064,
             'commune_id' => 3064011,
+            'role' => 10,
             'accepted' => true,
-            'email' => 'ggg@ggg.pl'
         ]);
 
+        User::factory()->create([
+            'username' => 'dave',
+            'name' => 'David',
+            'surname' => 'Price',
+            'email' => 'ddd@ddd.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 10,
+            'accepted' => true,
+        ]);
+
+        User::factory()->create([
+            'username' => 'ziuta',
+            'name' => 'Ziuta',
+            'surname' => 'Czarna',
+            'email' => 'zzz@zzz.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 7,
+            'accepted' => true,
+        ]);
+
+        User::factory()->create([
+            'username' => 'jadzia',
+            'name' => 'Jadzia',
+            'surname' => 'Biała',
+            'email' => 'jjj@jjj.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 1,
+            'accepted' => true,
+        ]);
+
+        // Counties
 
         County::factory()->createMany([
             ['id' => '3001', 'name' => 'chodzieski', 'description' => 'Powiat Chodzieski', 'nr_dysp' => '301'],
@@ -298,12 +335,6 @@ class DatabaseSeeder extends Seeder
             ['id' => '3031082', 'county_id' => '3031', 'nr_dysp' => '223', 'office' => 'UG', 'city' => 'Złotów', 'name' => 'Złotów'],
             ['id' => '3007112', 'county_id' => '3007', 'nr_dysp' => '225', 'office' => 'UG', 'city' => 'Żelazków', 'name' => 'Żelazków'],
             ['id' => '3006043', 'county_id' => '3006', 'nr_dysp' => '226', 'office' => 'UMG', 'city' => 'Żerków', 'name' => 'Żerków'],
-
-
-
         ]);
-
-
-
     }
 }

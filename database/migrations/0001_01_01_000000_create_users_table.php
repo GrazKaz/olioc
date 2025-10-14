@@ -16,14 +16,14 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('name');
             $table->string('surname');
+            $table->string('email')->unique();
+            $table->string('password');
             $table->integer('county_id');
             $table->integer('commune_id')->nullable();;
             $table->integer('role');
             $table->boolean('active')->default(true);
             $table->boolean('accepted')->default(false);
-            $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
