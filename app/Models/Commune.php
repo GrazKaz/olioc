@@ -19,6 +19,11 @@ class Commune extends Model
         return $this->belongsTo(County::class);
     }
 
+    public function users(): belongsTo
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function cards(): belongsToMany
     {
         return $this->belongsToMany(Card::class, 'card_county_commune');

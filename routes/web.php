@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/dev-login/{type}', function() {
@@ -8,11 +9,11 @@ Route::get('/dev-login/{type}', function() {
 
     if (request('type') === 'a')
     {
-        auth()->login(User::where('role_rank', 10)->first());
+        auth()->login(User::where('role', 10)->first());
     }
     else if (request('type') === 's')
     {
-        auth()->login(User::where('role_rank', 5)->first());
+        auth()->login(User::where('role', 7)->first());
     }
 
     return redirect()->to('/');
