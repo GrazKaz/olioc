@@ -18,56 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'username' => 'admin',
-            'name' => 'Admin',
-            'surname' => 'Administrator',
-            'email' => 'admin@poznan.uw.gov.pl',
-            'password' => Hash::make('abcd1234'),
-            'county_id' => 3064,
-            'commune_id' => 3064011,
-            'role' => 10,
-            'accepted' => true,
-        ]);
-
-        User::factory()->create([
-            'username' => 'dave',
-            'name' => 'David',
-            'surname' => 'Price',
-            'email' => 'ddd@ddd.pl',
-            'password' => Hash::make('abcd1234'),
-            'county_id' => 3064,
-            'commune_id' => 3064011,
-            'role' => 10,
-            'accepted' => true,
-        ]);
-
-        User::factory()->create([
-            'username' => 'ziuta',
-            'name' => 'Ziuta',
-            'surname' => 'Czarna',
-            'email' => 'zzz@zzz.pl',
-            'password' => Hash::make('abcd1234'),
-            'county_id' => 3064,
-            'commune_id' => 3064011,
-            'role' => 7,
-            'accepted' => true,
-        ]);
-
-        User::factory()->create([
-            'username' => 'jadzia',
-            'name' => 'Jadzia',
-            'surname' => 'Biała',
-            'email' => 'jjj@jjj.pl',
-            'password' => Hash::make('abcd1234'),
-            'county_id' => 3064,
-            'commune_id' => 3064011,
-            'role' => 1,
-            'accepted' => true,
-        ]);
-
+        // Tasks
 
         Task::factory()->createMany([
             ['numer' => 'I/1/1', 'dofinansowanie' => '100', 'section_id' => '1', 'ngo_hns' => null, 'dodatkowe_info' => 'zlecone', 'opis' => 'Budowa budowli ochronnych -  nowych obiektów zbiorowej ochrony - w standardzie UKRYCIE o znaczeniu lokalnym (finansowanie obejmuje proces projektowania i inwestycje) ', 'task_type' => '1'],
@@ -131,7 +82,8 @@ class DatabaseSeeder extends Seeder
 
         ]);
 
-        //Section
+        // Section
+
         Section::factory()->createMany([
             ['id' => '1 ', 'opis' => 'Dział budowli ochronnych zapewniajacych prztrwanie w przypadku wystęienia skażeń i uderzeń z powietrza'],
             ['id' => '2', 'opis' => 'zapewnienie ciągłości dostaw podstawowych usług kluczowych '],
@@ -148,9 +100,8 @@ class DatabaseSeeder extends Seeder
             ['id' => '13', 'opis' => 'edukacja, publikacja i promocja ochrony ludności w ramach obrony cywilnej'],
             ['id' => '14', 'opis' => 'zapewnienie dostępności kierowców na potrzeby ochrony ludności i obrony cywilnej'],
             ['id' => '15', 'opis' => 'System Ostrzegania, alarmowania i powiadamiania'],
-
-
         ]);
+
         // Counties
 
         County::factory()->createMany([
@@ -420,6 +371,56 @@ class DatabaseSeeder extends Seeder
             ['id' => '3031082', 'county_id' => '3031', 'nr_dysp' => '223', 'office' => 'UG', 'city' => 'Złotów', 'name' => 'Złotów'],
             ['id' => '3007112', 'county_id' => '3007', 'nr_dysp' => '225', 'office' => 'UG', 'city' => 'Żelazków', 'name' => 'Żelazków'],
             ['id' => '3006043', 'county_id' => '3006', 'nr_dysp' => '226', 'office' => 'UMG', 'city' => 'Żerków', 'name' => 'Żerków'],
+        ]);
+
+        // User::factory(10)->create();
+
+        User::factory()->create([
+            'username' => 'admin',
+            'name' => 'Admin',
+            'surname' => 'Administrator',
+            'email' => 'admin@poznan.uw.gov.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 10,
+            'verified' => now(),
+        ]);
+
+        User::factory()->create([
+            'username' => 'dave',
+            'name' => 'David',
+            'surname' => 'Price',
+            'email' => 'ddd@ddd.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 10,
+            'verified' => now(),
+        ]);
+
+        User::factory()->create([
+            'username' => 'ziuta',
+            'name' => 'Ziuta',
+            'surname' => 'Czarna',
+            'email' => 'zzz@zzz.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 7,
+            'verified' => now(),
+        ]);
+
+        User::factory()->create([
+            'username' => 'jadzia',
+            'name' => 'Jadzia',
+            'surname' => 'Biała',
+            'email' => 'jjj@jjj.pl',
+            'password' => Hash::make('abcd1234'),
+            'county_id' => 3064,
+            'commune_id' => 3064011,
+            'role' => 1,
+            'verified' => now(),
         ]);
     }
 }

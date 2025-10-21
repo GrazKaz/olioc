@@ -13,6 +13,8 @@ use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Schema;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
 use SensitiveParameter;
 
@@ -100,7 +102,15 @@ class Login extends BaseAuth
             Filament::auth()->logout();
 
             throw ValidationException::withMessages([
-                'data.username_email' => __('The account is not active.'),
+                'data.username_email' => __('The account is locked.'),
+            ]);
+        }
+
+        if (!$user->verified) {
+            Filament::auth()->logout();
+
+            throw ValidationException::withMessages([
+                'data.username_email' => __('The account awaits verification.'),
             ]);
         }
 
@@ -152,5 +162,18 @@ class Login extends BaseAuth
         throw ValidationException::withMessages([
             'data.username_email' => __('filament-panels::auth/pages/login.messages.failed'),
         ]);
+    }
+
+    public function getSubheading(): string | Htmlable | null
+    {
+        if (filled($this->userUndertakingMultiFactorAuthentication)) {
+            return __('filament-panels::auth/pages/login.multi_factor.subheading');
+        }
+
+        if (! filament()->hasRegistration()) {
+            return null;
+        }
+
+        return new HtmlString(__('filament-panels::auth/pages/login.actions.register.before') . ' ' . $this->registerAction->toHtml());
     }
 }

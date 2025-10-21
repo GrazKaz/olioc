@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+p > .fi-link,
+span > .fi-link {
+    vertical-align: unset;
+}
+
+.placeholder {
+    @apply bg-gray-100 dark:bg-gray-700 ring-1 ring-gray-300 dark:ring-gray-500 py-2 px-4 rounded-lg;
+}

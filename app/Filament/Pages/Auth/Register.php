@@ -2,40 +2,33 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Http\Responses\RegisterResponse;
 use App\Models\Commune;
 use App\Models\County;
 use App\Models\User;
-use Filament\Auth\Pages\Register as BaseRegister;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
 use Filament\Auth\Events\Registered;
 use Filament\Auth\Http\Responses\Contracts\RegistrationResponse;
-use Filament\Auth\Notifications\VerifyEmail;
+use Filament\Auth\Pages\Register as BaseRegister;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\Concerns\CanUseDatabaseTransactions;
-use Filament\Pages\SimplePage;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\EmbeddedSchema;
-use Filament\Schemas\Components\Form;
-use Filament\Schemas\Components\RenderHook;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Schema;
-use Filament\View\PanelsRenderHook;
-use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Auth\SessionGuard;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Contracts\Support\Htmlable;
+use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use LogicException;
 
@@ -48,6 +41,8 @@ class Register extends BaseRegister
     use CanUseDatabaseTransactions;
     use WithRateLimiting;
 
+    protected Width|string|null $maxContentWidth = Width::TwoExtraLarge;
+
     /**
      * @var array<string, mixed> | null
      */
@@ -58,45 +53,117 @@ class Register extends BaseRegister
      */
     protected string $userModel;
 
+    public function register(): ?RegistrationResponse
+    {
+        try {
+            $this->rateLimit(2);
+        } catch (TooManyRequestsException $exception) {
+            $this->getRateLimitedNotification($exception)?->send();
+
+            return null;
+        }
+
+        $user = $this->wrapInDatabaseTransaction(function (): Model {
+            $this->callHook('beforeValidate');
+
+            $data = $this->form->getState();
+
+            $this->callHook('afterValidate');
+
+            $data = $this->mutateFormDataBeforeRegister($data);
+
+            $this->callHook('beforeRegister');
+
+            $user = $this->handleRegistration($data);
+
+            $this->form->model($user)->saveRelationships();
+
+            $this->callHook('afterRegister');
+
+            return $user;
+        });
+
+        event(new Registered($user));
+
+        $this->sendEmailVerificationNotification($user);
+
+//        Filament::auth()->login($user);
+
+//        session()->regenerate();
+
+        return app(RegisterResponse::class);
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                $this->getUsernameFormComponent(),
-                $this->getNameFormComponent(),
-                $this->getSurnameFormComponent(),
-                $this->getEmailFormComponent(),
-                $this->getCountyFormComponent(),
-                $this->getCommuneFormComponent(),
-                $this->getPasswordFormComponent(),
-                $this->getPasswordConfirmationFormComponent(),
-                Action::make('Insert register data')
-                    ->label('Insert register data')
-                    ->icon('heroicon-o-arrow-uturn-up')
-                    ->action(function ($livewire) {
-                        $data = User::factory()->make()->toArray();
+                Wizard::make([
+                    Wizard\Step::make('Username')
+                        ->label(__('Username'))
+                        ->icon(Heroicon::OutlinedUser)
+                        ->schema([
+                            $this->getUsernameFormComponent(),
+                            $this->getNameFormComponent(),
+                            $this->getSurnameFormComponent(),
+                            $this->getEmailFormComponent(),
+                            Action::make('Insert register data')
+                                ->label('Insert register data')
+                                ->icon('heroicon-o-arrow-uturn-up')
+                                ->action(function ($livewire) {
+                                    $data = User::factory()->make()->toArray();
 
-                        $county = County::all()->random()->id;
-                        $commune = Commune::where('county_id', $county)->get()->random()->id;
+                                    $county = County::all()->random()->id;
+                                    $commune = Commune::where('county_id', $county)->get()->random()->id;
 
-                        $data['county_id'] = $county;
-                        $data['commune_id'] = $commune;
+                                    $data['county_id'] = $county;
+                                    $data['commune_id'] = $commune;
 
-                        $data['password'] = 'abcd1234';
-                        $data['passwordConfirmation'] = 'abcd1234';
+                                    $data['password'] = 'abcd1234';
+                                    $data['passwordConfirmation'] = 'abcd1234';
 
-                        $livewire->form->fill($data);
-                    })
-                    ->visible(function () {
-                        return app()->environment('local');
-                    })
+                                    $livewire->form->fill($data);
+                                })
+                                ->visible(function () {
+                                    return app()->environment('local');
+                                })
+                        ]),
+                    Wizard\Step::make('Location')
+                        ->label(__('Location'))
+                        ->icon(Heroicon::OutlinedMapPin)
+                        ->schema([
+                            $this->getCountyFormComponent(),
+                            $this->getCommuneFormComponent(),
+                            $this->getLocationInfoFormComponent(),
+
+                        ]),
+                    Wizard\Step::make('Password')
+                        ->label(__('Password'))
+                        ->icon(Heroicon::OutlinedLockClosed)
+                        ->schema([
+                            $this->getPasswordFormComponent(),
+                            $this->getPasswordConfirmationFormComponent(),
+                        ]),
+                ])
+                ->previousAction(
+                    fn (Action $action) => $action->label(__('Previous step')),
+                )
+                ->nextAction(
+                    fn (Action $action) => $action->label(__('Next step')),
+                )
+                ->submitAction(new HtmlString(Blade::render(<<<BLADE
+                    <x-filament::button type="submit" wire:submit="register">
+                        {{ __('Register') }}
+                    </x-filament::button>
+                    BLADE)))
+                ->contained(false)
             ]);
     }
 
     protected function getUsernameFormComponent(): Component
     {
         return TextInput::make('username')
-            ->label(__('Username'))
+            ->label(__('Username (login)'))
             ->required()
             ->maxLength(255)
             ->unique($this->getUserModel())
@@ -106,7 +173,7 @@ class Register extends BaseRegister
     protected function getNameFormComponent(): Component
     {
         return TextInput::make('name')
-            ->label(__('Name'))
+            ->label(__('First name'))
             ->required()
             ->maxLength(255);
     }
@@ -148,6 +215,7 @@ class Register extends BaseRegister
             ->options(function (Get $get) {
                 return Commune::where('county_id', $get('county_id'))->pluck('name', 'id');
             })
+            ->live()
             ->hint(function ($component) {
                 return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.county_id" />'));
             })
@@ -157,6 +225,44 @@ class Register extends BaseRegister
                     'wire:target' => 'data.county_id',
                 ];
             });
+    }
+
+    protected function getLocationInfoFormComponent(): Component
+    {
+        return TextEntry::make('location_info')
+            ->label(__('Chosen location info'))
+            ->state(function (Get $get) {
+
+                $str = '---';
+
+                if ($get('county_id') != null)
+                {
+                    $county = County::where('id', $get('county_id'))->first(['id', 'name']);
+
+                    $str = Blade::render(<<<BLADE
+                     <span><span class="font-semibold">{{ __('County') }}:</span> $county->id - $county->name</span>
+                    BLADE);
+                }
+
+                if ($get('commune_id') != null)
+                {
+                    $commune = Commune::where('id', $get('commune_id'))->first(['id', 'office', 'name']);
+
+                    $str .= Blade::render(<<<BLADE
+                     <span class="ml-6"><span class="font-semibold">{{ __('Commune') }}:</span> $commune->id - $commune->office $commune->name</span>
+                    BLADE);
+                }
+
+                return new HtmlString($str);
+            })
+            ->hint(function ($component) {
+                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.commune_id,data.county_id" />'));
+            })
+            ->extraAttributes([
+                'class' => 'placeholder',
+                'wire:loading.attr' => 'disabled',
+                'wire:target' => 'data.commune_id,data.county_id',
+            ]);
     }
 
     protected function getPasswordFormComponent(): Component
@@ -183,10 +289,17 @@ class Register extends BaseRegister
             ->dehydrated(false);
     }
 
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+
     protected function handleRegistration(array $data): Model
     {
         return $this->getUserModel()::create([...$data,
             'role' => 1
         ]);
+
+        // Mail about new account?
     }
 }

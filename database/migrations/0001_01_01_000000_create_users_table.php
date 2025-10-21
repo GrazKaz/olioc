@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('county_id');
-            $table->integer('commune_id')->nullable();;
+            $table->integer('commune_id')->nullable();
             $table->integer('role');
             $table->boolean('active')->default(true);
-            $table->boolean('accepted')->default(false);
+            $table->timestamp('verified')->nullable()->default(null);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
