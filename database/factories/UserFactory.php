@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Commune;
+use App\Models\County;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -23,10 +25,22 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $county = County::all()->random()->id;
+        $commune = Commune::where('county_id', $county)->get()->random()->id;
+
+        $name = fake()->firstName();
+        $surname = fake()->lastName();
+
+        $username = Str::lower(Str::charAt($name, 0) . Str::substr($surname, 0));
+
         return [
-            'name' => fake()->name(),
+            'username' => $username,
+            'name' => $name,
+            'surname' => $surname,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'county_id' => $county,
+            'commune_id' => $commune,
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
