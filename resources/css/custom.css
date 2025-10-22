@@ -6,5 +6,5 @@ span > .fi-link {
 }
 
 .placeholder {
-    @apply bg-gray-100 dark:bg-gray-700 ring-1 ring-gray-300 dark:ring-gray-500 py-2 px-4 rounded-lg;
+    @apply bg-orange-100 dark:bg-gray-700 ring-1 ring-orange-300 dark:ring-orange-500 py-2 px-4 rounded-lg;
 }

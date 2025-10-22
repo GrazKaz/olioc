@@ -3,7 +3,7 @@
 namespace App\Filament\Pages\Auth;
 
 use Filament\Actions\Action;
-use Filament\Auth\Http\Responses\Contracts\LoginResponse;
+use App\Http\Responses\LoginResponse;
 use Filament\Auth\MultiFactor\Contracts\HasBeforeChallengeHook;
 use Filament\Auth\Pages\Login as BaseAuth;
 use Filament\Facades\Filament;
@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
 use SensitiveParameter;
@@ -174,6 +175,11 @@ class Login extends BaseAuth
             return null;
         }
 
-        return new HtmlString(__('filament-panels::auth/pages/login.actions.register.before') . ' ' . $this->registerAction->toHtml());
+        if (session('message')) $msg = '<x-message type="warning">' . session('message') . '</x-message>';
+        else $msg = '';
+
+        return new HtmlString(__('filament-panels::auth/pages/login.actions.register.before') . ' ' . $this->registerAction->toHtml() . Blade::render(<<<BLADE
+                    $msg
+                    BLADE));
     }
 }

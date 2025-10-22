@@ -10,6 +10,6 @@ class RegisterResponse implements RegistrationResponseContract
 {
     public function toResponse($request): RedirectResponse|Redirector
     {
-        return redirect()->to(filament()->getLoginUrl())->with('account_message', 'Not verified!');
+        return redirect()->to(filament()->getLoginUrl())->with('message', 'Not verified!');
     }
 }
