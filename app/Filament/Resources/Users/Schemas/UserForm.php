@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\Role;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -34,20 +35,19 @@ class UserForm
                     ->label(__('County'))
                     ->relationship('county', 'name')
                     ->required(),
-                TextInput::make('commune_id')
+                Select::make('commune_id')
                     ->label(__('Commune'))
                     ->relationship('commune', 'name')
                     ->required(),
-                TextInput::make('role')
+                Select::make('role')
                     ->label(__('Role'))
-                    ->required()
-                    ->numeric(),
+                    ->options(Role::class)
+                    ->required(),
                 Toggle::make('active')
                     ->required(),
                 Toggle::make('accepted')
                     ->label(__('Accepted'))
                     ->required(),
-                DateTimePicker::make('email_verified_at'),
             ]);
     }
 }

@@ -42,7 +42,6 @@ class UsersTable
                 IconColumn::make('accepted')
                     ->label(__('Accepted'))
                     ->boolean(),
-
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

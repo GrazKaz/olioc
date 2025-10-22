@@ -25,4 +25,10 @@ class Task extends Model
         return $this->belongsTo(Section::class);
 
     }
+
+    public function application()
+    {
+        return $this->hasMany(Application::class);
+
+    }
 }

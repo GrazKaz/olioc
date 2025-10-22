@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Application;
 use App\Models\Commune;
 use App\Models\County;
 use App\Models\Section;
@@ -422,5 +423,7 @@ class DatabaseSeeder extends Seeder
             'role' => 1,
             'verified' => now(),
         ]);
+
+        Application::factory(10)->create();
     }
 }

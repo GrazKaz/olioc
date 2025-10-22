@@ -9,4 +9,10 @@ class Application extends Model
 {
     /** @use HasFactory<\Database\Factories\ApplicationFactory> */
     use HasFactory;
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+
+    }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('rpw');
             $table->date('data_wplywu');
             $table->Integer('nr_wniosku');
-            $table->string('powia_gmina',1);
+            $table->string('powiat_gmina',1);
             $table->string('urzad');
             $table->string('gmina');
             $table->string('powiat');
@@ -46,11 +46,11 @@ return new class extends Migration
             $table->integer('dzial');
             $table->integer('status');
             $table->decimal('kwota_umowy')->default(0);
-            $table->string('nr_zad_umowy')->nullable();
+            $table->text('nr_zad_umowy')->nullable();
             $table->integer('typ_zadania')->nullable();
             $table->text('uwagi')->nullable();
             $table->date('wysylka_data')->nullable();
-            $table->integer('wysylka_nr_pzycji')->nullable();
+            $table->integer('wysylka_nr_pozycji')->nullable();
             $table->integer('zgoda_mswia')->nullable();
             $table->foreignId('user_id');
             $table->timestamps();
