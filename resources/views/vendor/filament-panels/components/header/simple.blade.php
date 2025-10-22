@@ -19,10 +19,8 @@
         <p class="fi-simple-header-subheading">
             {{ $subheading }}
 
-            @if (session('account_message'))
-                <div class="text-red-600 mb-2">
-                    {{ session('account_message') }}
-                </div>
+            @if (session('message'))
+                <x-message type="{{ session('message.type') }}">{{ session('message.text') }}</x-message>
             @endif
         </p>
     @endif

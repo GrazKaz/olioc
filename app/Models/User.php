@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Role;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -54,5 +55,12 @@ class User extends Authenticatable
     public function commune(): BelongsTo
     {
         return $this->belongsTo(Commune::class);
+    }
+
+    protected function verified(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => ($value != null) ? date_format(date_create($value), 'd.m.Y H:i:s') : $value,
+        );
     }
 }

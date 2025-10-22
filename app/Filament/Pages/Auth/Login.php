@@ -3,7 +3,7 @@
 namespace App\Filament\Pages\Auth;
 
 use Filament\Actions\Action;
-use App\Http\Responses\LoginResponse;
+use Filament\Auth\Http\Responses\LoginResponse;
 use Filament\Auth\MultiFactor\Contracts\HasBeforeChallengeHook;
 use Filament\Auth\Pages\Login as BaseAuth;
 use Filament\Facades\Filament;
@@ -96,23 +96,31 @@ class Login extends BaseAuth
             $this->userUndertakingMultiFactorAuthentication = null;
 
             $this->fireFailedEvent($authGuard, $user, $credentials);
-            $this->throwFailureValidationException();
+            $this->noCredentials();
+
+            return null;
         }
 
         if (!$user->active) {
             Filament::auth()->logout();
 
-            throw ValidationException::withMessages([
-                'data.username_email' => __('The account is locked.'),
+            redirect()->to(filament()->getLoginUrl())->with('message', [
+                'type' => 'error',
+                'text' => __('The account is not active.'),
             ]);
+
+            return null;
         }
 
         if (!$user->verified) {
             Filament::auth()->logout();
 
-            throw ValidationException::withMessages([
-                'data.username_email' => __('The account awaits verification.'),
+            redirect()->to(filament()->getLoginUrl())->with('message', [
+                'type' => 'info',
+                'text' => __('The account awaits verification. You will receive an e-mail message after it\'s verified and active.'),
             ]);
+
+            return null;
         }
 
         if (
@@ -150,7 +158,9 @@ class Login extends BaseAuth
             return $user->canAccessPanel(Filament::getCurrentOrDefaultPanel());
         }, $data['remember'] ?? false)) {
             $this->fireFailedEvent($authGuard, $user, $credentials);
-            $this->throwFailureValidationException();
+            $this->noCredentials();
+
+            return null;
         }
 
         session()->regenerate();
@@ -158,28 +168,11 @@ class Login extends BaseAuth
         return app(LoginResponse::class);
     }
 
-    protected function throwFailureValidationException(): never
+    protected function noCredentials(): void
     {
-        throw ValidationException::withMessages([
-            'data.username_email' => __('filament-panels::auth/pages/login.messages.failed'),
+        redirect()->to(filament()->getLoginUrl())->with('message', [
+            'type' => 'error',
+            'text' => __('auth.failed'),
         ]);
-    }
-
-    public function getSubheading(): string | Htmlable | null
-    {
-        if (filled($this->userUndertakingMultiFactorAuthentication)) {
-            return __('filament-panels::auth/pages/login.multi_factor.subheading');
-        }
-
-        if (! filament()->hasRegistration()) {
-            return null;
-        }
-
-        if (session('message')) $msg = '<x-message type="warning">' . session('message') . '</x-message>';
-        else $msg = '';
-
-        return new HtmlString(__('filament-panels::auth/pages/login.actions.register.before') . ' ' . $this->registerAction->toHtml() . Blade::render(<<<BLADE
-                    $msg
-                    BLADE));
     }
 }

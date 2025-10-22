@@ -1,9 +1,26 @@
 @import 'tailwindcss';
 
+/* Register */
+
 p > .fi-link,
 span > .fi-link {
-    vertical-align: unset;
+    @apply align-baseline;
 }
+
+/* Headings */
+
+.fi-header-heading {
+    @apply font-semibold;
+}
+
+/* Tables */
+
+.fi-ta-cell-active .fi-ta-icon svg,
+.fi-ta-cell-verified .fi-ta-icon svg {
+    @apply w-5 h-5;
+}
+
+/* Forms */
 
 .placeholder {
     @apply bg-orange-100 dark:bg-gray-700 ring-1 ring-orange-300 dark:ring-orange-500 py-2 px-4 rounded-lg;

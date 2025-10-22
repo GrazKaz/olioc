@@ -87,11 +87,12 @@ class Register extends BaseRegister
 
         $this->sendEmailVerificationNotification($user);
 
-//        Filament::auth()->login($user);
+        redirect()->to(filament()->getLoginUrl())->with('message', [
+            'type' => 'info',
+            'text' => __('The account has been created and awaits verification. You will receive an e-mail message after it\'s verified and active.'),
+        ]);
 
-//        session()->regenerate();
-
-        return app(RegisterResponse::class);
+        return null;
     }
 
     public function form(Schema $schema): Schema
@@ -146,14 +147,15 @@ class Register extends BaseRegister
                         ]),
                 ])
                 ->previousAction(
-                    fn (Action $action) => $action->label(__('Previous step')),
+                    fn (Action $action) => $action->label(__('Previous step'))->icon('heroicon-c-arrow-left'),
                 )
                 ->nextAction(
-                    fn (Action $action) => $action->label(__('Next step')),
+                    fn (Action $action) => $action->label(__('Next step'))->icon('heroicon-c-arrow-right'),
                 )
                 ->submitAction(new HtmlString(Blade::render(<<<BLADE
                     <x-filament::button type="submit" wire:submit="register">
                         {{ __('Register') }}
+
                     </x-filament::button>
                     BLADE)))
                 ->contained(false)
