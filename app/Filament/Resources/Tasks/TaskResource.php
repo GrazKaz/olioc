@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Tasks;
 
+use App\Enums\NgoHns;
+use App\Enums\TaskType;
 use App\Filament\Resources\Tasks\Pages\ManageTasks;
 use App\Models\Task;
 use BackedEnum;
@@ -9,8 +11,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -45,19 +50,30 @@ class TaskResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
-            ->components([
+
+             ->components([
                 TextInput::make('numer')
                     ->required(),
                 TextInput::make('dofinansowanie')
-                    ->numeric(),
-                TextInput::make('section_id')
-                    ->numeric(),
-                TextInput::make('ngo_hns'),
-                TextInput::make('dodatkowe_info'),
-                TextInput::make('opis'),
-                TextInput::make('task_type')
-                    ->required()
-                    ->numeric(),
+                    ->suffix('%')
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100),
+                Select::make('section_id')
+                    ->relationship('section', 'opis')
+                    ->label('Rodzaj zadania'),
+                Select::make('ngo_hns')
+                    ->label('NGO/HNS')
+                    ->options(NgoHns::class),
+                TextInput::make('dodatkowe_info')
+                    ->label('Dodatkowe informacje'),
+                 Select::make('task_type')
+                     ->label('Typ')
+                     ->options(TaskType::class),
+                Textarea::make('opis')
+                 ->columnSpanFull(),
+
+
             ]);
     }
 

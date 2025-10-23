@@ -17,7 +17,7 @@ span > .fi-link {
 
 .fi-ta-cell-active .fi-ta-icon svg,
 .fi-ta-cell-verified .fi-ta-icon svg {
-    @apply w-5 h-5;
+    @apply w-4 h-4;
 }
 
 /* Forms */

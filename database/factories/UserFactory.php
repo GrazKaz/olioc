@@ -39,6 +39,7 @@ class UserFactory extends Factory
             'surname' => $surname,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'office_type' => 'G',
             'county_id' => $county,
             'commune_id' => $commune,
             'password' => static::$password ??= Hash::make('password'),

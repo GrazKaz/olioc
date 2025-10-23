@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -57,21 +58,35 @@ class CommuneResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
-                Select::make('county_id')
-                    ->relationship('county', 'name')
-                    ->required(),
-                TextInput::make('nr_dysp')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('office')
-                    ->required(),
-                TextInput::make('city')
-                    ->required(),
-                TextInput::make('name')
-                    ->required(),
-                Toggle::make('active')
-                    ->required(),
+                Section::make()
+                    ->columns(2)
+                    ->schema([
+                            Select::make('county_id')
+                                ->relationship('county', 'name')
+                                ->label(__('County'))
+                                ->required(),
+                            TextInput::make('nr_dysp')
+                                ->label('Numer dyspozycji')
+                                ->required()
+                                ->numeric(),
+                            TextInput::make('office')
+                                ->label('Urząd')
+                                ->required(),
+                            TextInput::make('city')
+                                ->label(__('City'))
+                                ->required(),
+                            TextInput::make('name')
+                                ->label(__('Name'))
+                                ->required(),
+                        ]),
+                        Section::make()
+                            ->columns(2)
+                            ->schema([
+                            Toggle::make('active')
+                                ->required(),
+                        ]),
             ]);
     }
 

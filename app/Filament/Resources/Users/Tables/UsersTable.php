@@ -39,10 +39,12 @@ class UsersTable
                 IconColumn::make('active')
                     ->label(__('Active'))
                     ->trueColor('info')
+                    ->alignCenter()
                     ->falseColor('warning')
                     ->boolean(),
                 IconColumn::make('verified')
                     ->label(__('Verified'))
+                    ->alignCenter()
                     ->boolean()
                     ->default(false)
                     ->trueIcon('fas-stamp')

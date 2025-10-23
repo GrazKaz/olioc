@@ -12,6 +12,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -50,16 +51,29 @@ class CountyResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+
+            ->columns(1)
             ->components([
-                TextInput::make('name')
-                    ->required(),
-                TextInput::make('description')
-                    ->required(),
-                TextInput::make('nr_dysp')
-                    ->required()
-                    ->numeric(),
-                Toggle::make('active')
-                    ->required(),
+                Section::make()
+                    ->columns(2)
+                    ->schema([
+                            TextInput::make('name')
+                                ->label(__('Name'))
+                                ->required(),
+                            TextInput::make('description')
+                                ->label(__('Description'))
+                                ->required(),
+                            TextInput::make('nr_dysp')
+                                ->label('Nr dyspozycji')
+                                ->required()
+                                ->numeric(),
+                            ]),
+                Section::make()
+                    ->columns(2)
+                    ->schema([
+                            Toggle::make('active')
+                                ->required(),
+                        ]),
             ]);
     }
 
@@ -82,6 +96,7 @@ class CountyResource extends Resource
                     ->sortable(),
                 IconColumn::make('active')
                     ->label(__('Active'))
+                    ->alignCenter()
                     ->sortable()
                     ->boolean(),
                 TextColumn::make('created_at')
