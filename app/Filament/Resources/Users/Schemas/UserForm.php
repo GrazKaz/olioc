@@ -13,6 +13,8 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use function Pest\Laravel\instance;
+use function PHPUnit\Framework\isInstanceOf;
 
 class UserForm
 {
@@ -56,9 +58,7 @@ class UserForm
                             ->relationship('county', 'name')
                             ->disabled(function(Get $get) {
 
-                                $office_type = OfficeType::tryFrom($get('office_type'));
-
-                                if ($office_type == '') return true;
+                                if ($get('office_type') == null) return true;
                                 else return false;
                             })
                             ->required(),
@@ -67,9 +67,7 @@ class UserForm
                             ->relationship('commune', 'name')
                             ->disabled(function(Get $get) {
 
-                                $office_type = OfficeType::tryFrom($get('office_type'));
-
-                                if ($office_type == '' || $office_type == 'P') return true;
+                                if ($get('office_type') == null || $get('office_type')->value == 'P') return true;
                                 else return false;
                             })
                             ->required(),
@@ -81,7 +79,6 @@ class UserForm
                             ->label(__('Role'))
                             ->options(Role::class)
                             ->required(),
-
                         TextEntry::make('verified')
                             ->label(__('Verified'))
                             ->state(function ($record) {
@@ -92,16 +89,12 @@ class UserForm
 
                                 return $record->verified;
                             })
-
                             ->visible(fn ($operation) => $operation == 'edit')
-
                             ->extraAttributes(['class' => 'placeholder']),
                         Toggle::make('active')
                             ->label(__('Active'))
                             ->columnSpanFull()
                             ->default(true),
-
-
                     ]),
             ]);
     }

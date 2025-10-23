@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\OfficeType;
 use App\Enums\Role;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,7 +44,8 @@ class User extends Authenticatable
             'verified' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => Role::class
+            'office_type' => OfficeType::class,
+            'role' => Role::class,
         ];
     }
 
