@@ -7,6 +7,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -14,6 +15,7 @@ class UserForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(4)
             ->components([
                 TextInput::make('username')
                     ->label(__('Username'))
@@ -30,7 +32,7 @@ class UserForm
                     ->required(),
                 TextInput::make('password')
                     ->password()
-                    ->required(),
+                    ->dehydrated(fn ($state) => filled($state)),
                 Select::make('county_id')
                     ->label(__('County'))
                     ->relationship('county', 'name')
@@ -45,9 +47,18 @@ class UserForm
                     ->required(),
                 Toggle::make('active')
                     ->required(),
-                Toggle::make('accepted')
-                    ->label(__('Accepted'))
-                    ->required(),
+                TextEntry::make('verified')
+                    ->label(__('Verified'))
+                    ->state(function ($record) {
+
+                        if ($record->verified === null) {
+                            return __('Not verified');
+                        }
+
+                        return $record->verified;
+                    })
+                    ->visible(fn ($operation) => $operation == 'edit')
+                    ->extraAttributes(['class' => 'placeholder']),
             ]);
     }
 }

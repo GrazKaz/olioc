@@ -66,7 +66,8 @@ class UsersTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->label(''),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
