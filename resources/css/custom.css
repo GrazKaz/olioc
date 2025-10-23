@@ -1,5 +1,19 @@
 @import 'tailwindcss';
 
+/* Logo */
+
+.fi-logo {
+    @apply !h-14;
+}
+
+.fi-body-has-topbar .fi-logo {
+    @apply !h-8;
+}
+
+.info-logo .fi-logo {
+    @apply !h-14;
+}
+
 /* Register */
 
 p > .fi-link,

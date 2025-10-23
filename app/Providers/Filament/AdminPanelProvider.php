@@ -4,6 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\Register;
+use App\Filament\Pages\EditProfile;
+use App\Filament\Pages\Info;
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,6 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('')
+            ->brandLogo(fn () => view('filament.logo'))
+            ->favicon(asset('images/favicon.svg'))
             ->login(Login::class)
             ->registration(Register::class)
             ->passwordReset()
@@ -46,6 +51,16 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make(__('Administration')),
                 NavigationGroup::make(__('Dictionaries')),
+            ])
+            ->userMenuItems([
+                Action::make('edit-profile')
+                    ->label(__('Edit profile'))
+                    ->url(fn (): string => EditProfile::getUrl())
+                    ->icon('heroicon-o-user'),
+                Action::make('information')
+                    ->label(__('Information'))
+                    ->url(fn (): string => Info::getUrl())
+                    ->icon('heroicon-o-information-circle'),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

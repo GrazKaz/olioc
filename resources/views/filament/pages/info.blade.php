@@ -11,8 +11,10 @@
             </div>
             <div class="flex flex-col gap-1 items-center justify-center mb-8">
                 <table>
-                    <tr><td class="font-semibold pr-4">{{ __('main programmers') }}:</td><td>Grażyna Kaznowska</td></tr>
+                    <tr><td class="font-semibold pr-4 text-right">{{ __('main programmers') }}:</td><td>Grażyna Kaznowska</td></tr>
                     <tr><td class="pr-4"></td><td>Dawid Politowski</td></tr>
+                    <tr><td class="font-semibold pr-4 text-right">{{ __('cooperation') }}:</td><td>??</td></tr>
+                    <tr><td class="pr-4"></td><td>??</td></tr>
                 </table>
             </div>
             <div class="flex flex-col gap-2 items-center justify-center">

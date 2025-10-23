@@ -44,7 +44,6 @@ class User extends Authenticatable
             'verified' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'office_type' => OfficeType::class,
             'role' => Role::class,
         ];
     }

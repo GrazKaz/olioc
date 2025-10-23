@@ -228,7 +228,7 @@ class DatabaseSeeder extends Seeder
             ['id' => '3010062', 'county_id' => '3010', 'nr_dysp' => '87', 'office' => 'UG', 'city' => 'Krzymów', 'name' => 'Krzymów'],
             ['id' => '3011043', 'county_id' => '3011', 'nr_dysp' => '88', 'office' => 'UMiG', 'city' => 'Krzywiń', 'name' => 'Krzywiń'],
             ['id' => '3002043', 'county_id' => '3002', 'nr_dysp' => '89', 'office' => 'UM', 'city' => 'Krzyż Wlkp.', 'name' => 'Krzyż Wlkp.'],
-            ['id' => '3026035', 'county_id' => '3026', 'nr_dysp' => '90', 'office' => 'UM', 'city' => 'Książ Wlkp.', 'name' => 'KsiążWlkp.'],
+            ['id' => '3026035', 'county_id' => '3026', 'nr_dysp' => '90', 'office' => 'UM', 'city' => 'Książ Wlkp.', 'name' => 'Książ Wlkp.'],
             ['id' => '3015012', 'county_id' => '3015', 'nr_dysp' => '91', 'office' => 'UG', 'city' => 'Kuślin', 'name' => 'Kuślin'],
             ['id' => '3014022', 'county_id' => '3014', 'nr_dysp' => '92', 'office' => 'UG', 'city' => 'Kwilcz', 'name' => 'Kwilcz'],
             ['id' => '3023022', 'county_id' => '3023', 'nr_dysp' => '93', 'office' => 'UG', 'city' => 'Lądek', 'name' => 'Lądek'],

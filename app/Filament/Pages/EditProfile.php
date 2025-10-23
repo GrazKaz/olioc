@@ -35,6 +35,7 @@ class EditProfile extends Page implements HasForms
     public $user;
 
     public ?array $profileData = [];
+    public ?array $addressData = [];
     public ?array $passwordData = [];
 
     protected string $view = 'filament.pages.edit-profile';
@@ -43,7 +44,7 @@ class EditProfile extends Page implements HasForms
     {
         $this->user = auth()->user();
 
-        $this->profileForm->fill($this->user->only(['username', 'name_surname', 'email']));
+        $this->profileForm->fill($this->user->only(['username', 'name', 'surname', 'email']));
     }
 
     public function profileForm(Schema $form): Schema
@@ -59,22 +60,28 @@ class EditProfile extends Page implements HasForms
                             ->label(__('Username'))
                             ->state(fn ($record): string => $this->user->username)
                             ->extraAttributes(['class' => 'placeholder']),
+                        TextEntry::make('role')
+                            ->label(__('Role'))
+                            ->state(fn ($record): string => $this->user->role->getLabel())
+                            ->extraAttributes(['class' => 'placeholder']),
+                        TextEntry::make('created_at')
+                            ->label(__('Account created at'))
+                            ->state(function () {
+                                return date('d.m.Y H:i:s', strtotime($this->user->created_at));
+                            })
+                            ->extraAttributes(['class' => 'placeholder']),
                         TextEntry::make('last_login_at')
                             ->label(__('Last login at'))
                             ->state(function () {
-                                return ($this->user->last_login_at) ? date('d-m-Y H:i:s', strtotime($this->user->last_login_at)) : __('none');
+                                return ($this->user->last_login_at) ? date('d.m.Y H:i:s', strtotime($this->user->last_login_at)) : __('none');
                             })
                             ->extraAttributes(['class' => 'placeholder']),
-                        TextEntry::make('role')
-                            ->label(__('Role'))
-                            ->state(fn ($record): string => $this->user->role_rank->getLabel())
-                            ->extraAttributes(['class' => 'placeholder']),
-                        TextEntry::make('permission')
-                            ->label(__('Permission'))
-                            ->state(fn ($record): string => $this->user->permission->getLabel())
-                            ->extraAttributes(['class' => 'placeholder']),
-                        TextInput::make('name_surname')
-                            ->label(__('Name surname'))
+                        TextInput::make('name')
+                            ->label(__('First name'))
+                            ->maxLength(255)
+                            ->required(),
+                        TextInput::make('surname')
+                            ->label(__('Surname'))
                             ->maxLength(255)
                             ->required(),
                         TextInput::make('email')
@@ -86,6 +93,82 @@ class EditProfile extends Page implements HasForms
                     ]),
             ])
             ->statePath('profileData');
+    }
+
+    public function locationForm(Schema $form): Schema
+    {
+        return $form
+            ->schema([
+                Section::make(__('Location information'))
+                    ->description(__('Update the office location information and address.'))
+                    ->aside()
+                    ->schema([
+                        Group::make()
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('county_id')
+                                    ->label(__('County TERYT'))
+                                    ->state(fn ($record): string => $this->user->county->id)
+                                    ->extraAttributes(['class' => 'placeholder']),
+                                TextEntry::make('county')
+                                    ->label(__('County'))
+                                    ->state(fn ($record): string => $this->user->county->name)
+                                    ->extraAttributes(['class' => 'placeholder']),
+                            ]),
+                        Group::make()
+                            ->columns(3)
+                            ->schema([
+                                TextEntry::make('commune_id')
+                                    ->label(__('Commune TERYT'))
+                                    ->state(fn ($record): string => $this->user->commune->id)
+                                    ->extraAttributes(['class' => 'placeholder']),
+                                TextEntry::make('office')
+                                    ->label(__('Office'))
+                                    ->state(fn ($record): string => $this->user->commune->office)
+                                    ->extraAttributes(['class' => 'placeholder']),
+                                TextEntry::make('commune')
+                                    ->label(__('Commune'))
+                                    ->state(fn ($record): string => $this->user->commune->name)
+                                    ->extraAttributes(['class' => 'placeholder']),
+                            ])
+                            ->visible(function() {
+                                return $this->user->office_type == 'G';
+                            }),
+                    ]),
+            ])
+            ->statePath('locationData');
+    }
+
+    public function addressForm(Schema $form): Schema
+    {
+        return $form
+            ->schema([
+                Section::make(__('Basic information'))
+                    ->columns(2)
+                    ->description(__('Update the office address.'))
+                    ->aside()
+                    ->schema([
+                        TextInput::make('street')
+                            ->label(__('Street'))
+                            ->maxLength(255)
+                            ->required(),
+                        TextInput::make('street_number')
+                            ->label(__('Street number'))
+                            ->maxLength(30)
+                            ->required(),
+                        TextInput::make('postal_code')
+                            ->label(__('Postal code'))
+                            ->afterLabel('Format 99-999')
+                            ->regex('/^[0-9]{2}-[0-9]{3}$/')
+                            ->mask('99-999')
+                            ->required(),
+                        TextInput::make('city')
+                            ->label(__('City'))
+                            ->maxLength(255)
+                            ->required(),
+                    ]),
+            ])
+            ->statePath('addressData');
     }
 
     public function passwordForm(Schema $form): Schema
@@ -132,6 +215,15 @@ class EditProfile extends Page implements HasForms
             Action::make('save')
                 ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
                 ->submit('saveProfile'),
+        ];
+    }
+
+    protected function getAddressFormActions(): array
+    {
+        return [
+            Action::make('save')
+                ->label(__('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+                ->submit('saveAddress'),
         ];
     }
 
