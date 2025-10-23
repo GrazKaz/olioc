@@ -6,16 +6,15 @@ use Filament\Support\Contracts\HasLabel;
 enum NgoHns: int implements HasLabel
 {
     case EMPTY = 0;
-    case HNS = 1;
-    case NGO = 2;
-
+    case NGO = 1;
+    case HNS = 2;
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::HNS => __('HNS'),
-            self::NGO => __('NGO'),
-            self::EMPTY => __('--'),
+            self::NGO => 'NGO',
+            self::HNS => 'HNS',
+            self::EMPTY => __('-none-'),
 
         };
     }
@@ -23,10 +22,9 @@ enum NgoHns: int implements HasLabel
     public function getColor(): ?string
     {
         return match ($this) {
-            self::HNS => 'primary',
-            self::NGO => 'success',
             self::EMPTY => 'info',
-
+            self::NGO => 'success',
+            self::HNS => 'primary',
         };
     }
 }

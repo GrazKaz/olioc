@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('surname');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('office_type',1);
+            $table->string('office_type', 1);
             $table->integer('county_id');
             $table->integer('commune_id')->nullable();
             $table->integer('role');

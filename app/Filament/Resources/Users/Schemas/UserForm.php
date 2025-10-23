@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Enums\OfficeType;
 use App\Enums\Role;
+use App\Models\Commune;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,8 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use function Pest\Laravel\instance;
 use function PHPUnit\Framework\isInstanceOf;
 
@@ -24,7 +27,7 @@ class UserForm
             ->columns(1)
             ->components([
                 Section::make()
-                    ->columns(2)
+                    ->columns(3)
                     ->schema([
                         TextInput::make('username')
                             ->label(__('Username'))
@@ -52,6 +55,7 @@ class UserForm
                             ->inline()
                             ->options(OfficeType::class)
                             ->live()
+                            ->default(OfficeType::COUNTY)
                             ->required(),
                         Select::make('county_id')
                             ->label(__('County'))
@@ -61,16 +65,40 @@ class UserForm
                                 if ($get('office_type') == null) return true;
                                 else return false;
                             })
-                            ->required(),
+                            ->required()
+                            ->hint(function ($component) {
+                                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.office_type" />'));
+                            })
+                            ->extraInputAttributes(function ($component) {
+                                return [
+                                    'wire:loading.attr' => 'disabled',
+                                    'wire:target' => 'data.office_type',
+                                ];
+                            }),
                         Select::make('commune_id')
                             ->label(__('Commune'))
-                            ->relationship('commune', 'name')
+                            ->options(function (Get $get) {
+                                return Commune::where('county_id', $get('county_id'))->pluck('name', 'id');
+                            })
+                            ->required(function(Get $get) {
+
+                                if ($get('office_type') != null && $get('office_type')->value == 'G') return true;
+                                else return false;
+                            })
                             ->disabled(function(Get $get) {
 
                                 if ($get('office_type') == null || $get('office_type')->value == 'P') return true;
                                 else return false;
                             })
-                            ->required(),
+                            ->hint(function ($component) {
+                                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.office_type,data.county_id" />'));
+                            })
+                            ->extraInputAttributes(function ($component) {
+                                return [
+                                    'wire:loading.attr' => 'disabled',
+                                    'wire:target' => 'data.office_type,data.county_id',
+                                ];
+                            }),
                     ]),
                 Section::make()
                     ->columns(2)
@@ -78,7 +106,16 @@ class UserForm
                         Select::make('role')
                             ->label(__('Role'))
                             ->options(Role::class)
-                            ->required(),
+                            ->default(Role::USER)
+                            ->required()
+                            ->disabled(function ($operation, $record) {
+
+                                if ($operation == 'edit') {
+                                    return ($record->id == 1);
+                                }
+
+                                return false;
+                            }),
                         TextEntry::make('verified')
                             ->label(__('Verified'))
                             ->state(function ($record) {
@@ -94,7 +131,15 @@ class UserForm
                         Toggle::make('active')
                             ->label(__('Active'))
                             ->columnSpanFull()
-                            ->default(true),
+                            ->default(true)
+                            ->disabled(function ($operation, $record) {
+
+                                if ($operation == 'edit') {
+                                    return ($record->id == 1);
+                                }
+
+                                return false;
+                            }),
                     ]),
             ]);
     }

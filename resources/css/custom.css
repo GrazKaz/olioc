@@ -22,6 +22,49 @@ span > .fi-link {
 
 /* Forms */
 
+.fi-input-wrp {
+    @apply border border-neutral-400 shadow-none ring-0 inset-shadow-sm inset-shadow-neutral-200;
+}
+
+.fi-input-wrp .fi-input-wrp-suffix:not(.fi-inline) {
+    @apply border-neutral-400;
+}
+
+.fi-fo-radio.fi-inline {
+    @apply gap-8;
+}
+
+.fi-fo-radio-label {
+    @apply items-center;
+}
+
+input[type=checkbox].fi-checkbox-input,
+input[type=radio].fi-radio-input {
+    @apply border border-solid border-neutral-400 shadow-none ring-0 inset-shadow-sm inset-shadow-neutral-200 w-5 h-5 m-0;
+}
+
+input[type=checkbox].fi-checkbox-input:disabled {
+    @apply shadow-none inset-shadow-none;
+}
+
+.fi-input-wrp.fi-disabled {
+    @apply bg-neutral-200;
+}
+
+.fi-btn:not(.fi-color),
+label.fi-btn {
+    @apply border border-neutral-400 shadow-none ring-0;
+}
+
+.fi-btn.fi-disabled,
+.fi-btn[disabled] {
+    @apply opacity-50;
+}
+
 .placeholder {
     @apply bg-orange-100 dark:bg-gray-700 ring-1 ring-orange-300 dark:ring-orange-500 py-2 px-4 rounded-lg;
+}
+
+.fi-loading-indicator {
+    @apply w-4 h-4;
 }

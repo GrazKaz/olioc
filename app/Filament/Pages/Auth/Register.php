@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Enums\OfficeType;
 use App\Http\Responses\RegisterResponse;
 use App\Models\Commune;
 use App\Models\County;
@@ -13,6 +14,7 @@ use Filament\Auth\Pages\Register as BaseRegister;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -47,11 +49,6 @@ class Register extends BaseRegister
      * @var array<string, mixed> | null
      */
     public ?array $data = [];
-
-    /**
-     * @var class-string<Model>
-     */
-    protected string $userModel;
 
     public function register(): ?RegistrationResponse
     {
@@ -133,6 +130,7 @@ class Register extends BaseRegister
                         ->label(__('Location'))
                         ->icon(Heroicon::OutlinedMapPin)
                         ->schema([
+                            $this->getOfficeTypeFormComponent(),
                             $this->getCountyFormComponent(),
                             $this->getCommuneFormComponent(),
                             $this->getLocationInfoFormComponent(),
@@ -198,6 +196,19 @@ class Register extends BaseRegister
             ->unique($this->getUserModel());
     }
 
+    protected function getOfficeTypeFormComponent(): Component
+    {
+        return Radio::make('office_type')
+            ->label(__('Office type'))
+            ->inline()
+            ->options(OfficeType::class)
+            ->live()
+            ->required()
+            ->afterStateUpdated(function (Set $set) {
+                $set('commune_id', null);
+            });
+    }
+
     protected function getCountyFormComponent(): Component
     {
         return Select::make('county_id')
@@ -205,8 +216,22 @@ class Register extends BaseRegister
             ->options(County::pluck('name', 'id'))
             ->required()
             ->live()
+            ->disabled(function(Get $get) {
+
+                if ($get('office_type') == null) return true;
+                else return false;
+            })
             ->afterStateUpdated(function (Set $set) {
                 $set('commune_id', null);
+            })
+            ->hint(function ($component) {
+                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.office_type" />'));
+            })
+            ->extraInputAttributes(function ($component) {
+                return [
+                    'wire:loading.attr' => 'disabled',
+                    'wire:target' => 'data.office_type',
+                ];
             });
     }
 
@@ -217,14 +242,24 @@ class Register extends BaseRegister
             ->options(function (Get $get) {
                 return Commune::where('county_id', $get('county_id'))->pluck('name', 'id');
             })
+            ->required(function(Get $get) {
+
+                if ($get('office_type') != null && $get('office_type')->value == 'G') return true;
+                else return false;
+            })
             ->live()
+            ->disabled(function(Get $get) {
+
+                if ($get('office_type') == null || $get('office_type')->value == 'P') return true;
+                else return false;
+            })
             ->hint(function ($component) {
-                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.county_id" />'));
+                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.office_type,data.county_id" />'));
             })
             ->extraInputAttributes(function ($component) {
                 return [
                     'wire:loading.attr' => 'disabled',
-                    'wire:target' => 'data.county_id',
+                    'wire:target' => 'data.office_type,data.county_id',
                 ];
             });
     }
@@ -258,12 +293,12 @@ class Register extends BaseRegister
                 return new HtmlString($str);
             })
             ->hint(function ($component) {
-                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.commune_id,data.county_id" />'));
+                return new HtmlString(Blade::render('<x-filament::loading-indicator class="loading" wire:loading wire:target="data.office_type,data.commune_id,data.county_id" />'));
             })
             ->extraAttributes([
                 'class' => 'placeholder',
                 'wire:loading.attr' => 'disabled',
-                'wire:target' => 'data.commune_id,data.county_id',
+                'wire:target' => 'data.office_type,data.commune_id,data.county_id',
             ]);
     }
 

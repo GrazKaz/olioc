@@ -5,25 +5,25 @@ use Filament\Support\Contracts\HasLabel;
 
 enum Approve: int implements HasLabel
 {
-    case TAK = 1;
-    case NIE = 2;
-    case WT = 3;
+    case YES = 1;
+    case NO = 2;
+    case PENDING = 3;
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::TAK => __('Tak'),
-            self::NIE => __('Nie'),
-            self::WT => __('W trakcie'),
+            self::YES => __('Yes'),
+            self::NO => __('No'),
+            self::PENDING => __('Pending'),
         };
     }
 
     public function getColor(): ?string
     {
         return match ($this) {
-            self::TAK => 'primary',
-            self::NIE => 'success',
-            self::WT => 'info',
+            self::YES => 'primary',
+            self::NO => 'success',
+            self::PENDING => 'info',
         };
     }
 }

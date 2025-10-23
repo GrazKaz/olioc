@@ -17,22 +17,28 @@ class UsersTable
             ->columns([
                 TextColumn::make('username')
                     ->label(__('Username'))
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('name')
                     ->label(__('First name'))
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('surname')
                     ->label(__('Surname'))
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('email')
                     ->label(__('E-mail'))
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('county.name')
                     ->label(__('County'))
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('commune.name')
                     ->label(__('Commune'))
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('role')
                     ->label(__('Role'))
                     ->sortable(),
@@ -41,7 +47,8 @@ class UsersTable
                     ->trueColor('info')
                     ->alignCenter()
                     ->falseColor('warning')
-                    ->boolean(),
+                    ->boolean()
+                    ->sortable(),
                 IconColumn::make('verified')
                     ->label(__('Verified'))
                     ->alignCenter()
@@ -54,7 +61,8 @@ class UsersTable
                     ->tooltip(function($record) {
 
                         return ($record->verified) ? __('Verified on') . ' ' . $record->verified : __('Not verified');
-                    }),
+                    })
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -70,11 +78,6 @@ class UsersTable
             ->recordActions([
                 EditAction::make()
                     ->label(''),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

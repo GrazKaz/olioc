@@ -25,8 +25,18 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $office_type = fake()->randomElement(['P', 'G']);
+
         $county = County::all()->random()->id;
-        $commune = Commune::where('county_id', $county)->get()->random()->id;
+
+        if ($office_type == 'G')
+        {
+            $commune = Commune::where('county_id', $county)->get()->random()->id;
+        }
+        else
+        {
+            $commune = null;
+        }
 
         $name = fake()->firstName();
         $surname = fake()->lastName();
@@ -39,7 +49,7 @@ class UserFactory extends Factory
             'surname' => $surname,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'office_type' => 'G',
+            'office_type' => $office_type,
             'county_id' => $county,
             'commune_id' => $commune,
             'password' => static::$password ??= Hash::make('password'),

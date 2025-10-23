@@ -30,7 +30,11 @@ class EditUser extends EditRecord
                     ]);
                 })
                 ->visible(fn ($record) => ($record->verified === null)),
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->disabled(function ($record) {
+
+                    return ($record->id === 1);
+                }),
         ];
     }
 
