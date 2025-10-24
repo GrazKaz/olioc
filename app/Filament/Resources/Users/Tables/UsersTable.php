@@ -31,6 +31,10 @@ class UsersTable
                     ->label(__('E-mail'))
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('phone_number')
+                    ->label(__('Phone number'))
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('county.name')
                     ->label(__('County'))
                     ->sortable()

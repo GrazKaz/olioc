@@ -42,6 +42,9 @@ class UserForm
                             ->label(__('Email'))
                             ->email()
                             ->required(),
+                        TextInput::make('phone_number')
+                            ->label(__('Phone number'))
+                            ->required(),
                         TextInput::make('password')
                             ->label(__('Password'))
                             ->password()

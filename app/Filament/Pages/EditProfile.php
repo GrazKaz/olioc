@@ -44,7 +44,7 @@ class EditProfile extends Page implements HasForms
     {
         $this->user = auth()->user();
 
-        $this->profileForm->fill($this->user->only(['username', 'name', 'surname', 'email']));
+        $this->profileForm->fill($this->user->only(['username', 'name', 'surname', 'email', 'phone_number'ge]));
     }
 
     public function profileForm(Schema $form): Schema
@@ -90,6 +90,10 @@ class EditProfile extends Page implements HasForms
                             ->maxLength(255)
                             ->required()
                             ->unique(User::class, ignorable: $this->user),
+                        TextInput::make('phone_number')
+                            ->label('Phone number')
+                            ->maxLength(255)
+                            ->required(),
                     ]),
             ])
             ->statePath('profileData');

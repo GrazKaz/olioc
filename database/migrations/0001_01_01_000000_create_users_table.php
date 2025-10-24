@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('office_type', 1);
             $table->integer('county_id');
             $table->integer('commune_id')->nullable();
+            $table->string('phone_number');
             $table->integer('role');
             $table->boolean('active')->default(true);
             $table->timestamp('verified')->nullable()->default(null);

@@ -52,6 +52,7 @@ class UserFactory extends Factory
             'office_type' => $office_type,
             'county_id' => $county,
             'commune_id' => $commune,
+            'phone_number' => fake()->phoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
