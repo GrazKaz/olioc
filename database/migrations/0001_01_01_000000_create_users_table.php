@@ -17,11 +17,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('email')->unique();
+            $table->string('phone_number');
             $table->string('password');
             $table->string('office_type', 1);
             $table->integer('county_id');
             $table->integer('commune_id')->nullable();
-            $table->string('phone_number');
+            $table->string('street')->nullable();
+            $table->string('street_number')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('city')->nullable();
             $table->integer('role');
             $table->boolean('active')->default(true);
             $table->timestamp('verified')->nullable()->default(null);

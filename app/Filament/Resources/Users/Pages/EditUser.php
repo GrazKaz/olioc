@@ -38,6 +38,13 @@ class EditUser extends EditRecord
         ];
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if ($data['office_type']->value == 'P') $data['commune_id'] = null;
+
+        return $data;
+    }
+
     protected function getRedirectUrl(): string
     {
         return route('filament.admin.resources.users.index');

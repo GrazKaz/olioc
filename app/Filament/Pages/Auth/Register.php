@@ -20,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Pages\Concerns\CanUseDatabaseTransactions;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
@@ -102,9 +103,14 @@ class Register extends BaseRegister
                         ->icon(Heroicon::OutlinedUser)
                         ->schema([
                             $this->getUsernameFormComponent(),
-                            $this->getNameFormComponent(),
-                            $this->getSurnameFormComponent(),
+                            Group::make()
+                                ->columns(2)
+                                ->schema([
+                                    $this->getNameFormComponent(),
+                                    $this->getSurnameFormComponent(),
+                                ]),
                             $this->getEmailFormComponent(),
+                            $this->getPhoneFormComponent(),
                             Action::make('Insert register data')
                                 ->label('Insert register data')
                                 ->icon('heroicon-o-arrow-uturn-up')
@@ -194,6 +200,14 @@ class Register extends BaseRegister
             ->required()
             ->maxLength(255)
             ->unique($this->getUserModel());
+    }
+
+    protected function getPhoneFormComponent(): Component
+    {
+        return TextInput::make('phone_number')
+            ->label(__('Phone number'))
+            ->required()
+            ->maxLength(30);
     }
 
     protected function getOfficeTypeFormComponent(): Component

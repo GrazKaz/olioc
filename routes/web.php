@@ -15,6 +15,10 @@ Route::get('/dev-login/{type}', function() {
     {
         auth()->login(User::where('role', 7)->first());
     }
+    else if (request('type') === 'u')
+    {
+        auth()->login(User::where('role', 1)->first());
+    }
 
     return redirect()->to('/');
 

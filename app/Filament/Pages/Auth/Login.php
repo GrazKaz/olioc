@@ -45,10 +45,18 @@ class Login extends BaseAuth
                         ->action(function () {
                             return redirect(route('dev-login', 's'));
                         }),
-                    ])
-                    ->visible(function() {
-                        return (bool) app()->environment('local');
-                    }),
+                    Action::make('auto-login-user')
+                        ->label('Auto login User')
+                        ->icon('heroicon-o-arrow-uturn-up')
+                        ->color('warning')
+                        ->extraAttributes(['class' => 'auto-login-btn w-full'])
+                        ->action(function () {
+                            return redirect(route('dev-login', 'u'));
+                        }),
+                ])
+                ->visible(function() {
+                    return (bool) app()->environment('local');
+                }),
             ]);
     }
 

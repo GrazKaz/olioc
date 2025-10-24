@@ -47,7 +47,6 @@ class CountyResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'County';
 
-
     public static function form(Schema $schema): Schema
     {
         return $schema

@@ -24,11 +24,7 @@ class CommuneResource extends Resource
 {
     protected static ?string $model = Commune::class;
 
-
-
     protected static ?string $recordTitleAttribute = 'Commune';
-
-
 
     //protected static string|BackedEnum|null $navigationIcon = 'mdi-factory';
 
@@ -53,7 +49,6 @@ class CommuneResource extends Resource
     {
         return static::getModel()::count();
     }
-
 
     public static function form(Schema $schema): Schema
     {

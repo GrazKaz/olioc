@@ -49,12 +49,15 @@ class UserFactory extends Factory
             'surname' => $surname,
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'phone_number' => fake()->phoneNumber(),
             'office_type' => $office_type,
             'county_id' => $county,
             'commune_id' => $commune,
-            'phone_number' => fake()->phoneNumber(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make('abcd1234'),
             'remember_token' => Str::random(10),
+            'role' => 1,
+            'active' => true,
+            'verified' => now(),
         ];
     }
 

@@ -34,6 +34,20 @@ span > .fi-link {
     @apply w-4 h-4;
 }
 
+/* Tabs */
+
+.fi-tabs button {
+    @apply bg-gray-100 dark:bg-gray-700 focus:outline-2 focus:outline-black;
+}
+
+.fi-tabs button span {
+    @apply text-gray-700 dark:text-white;
+}
+
+.fi-tabs-item.fi-active {
+    @apply outline-solid outline-2 outline-gray-400 -outline-offset-2 focus:outline-2 focus:outline-black;
+}
+
 /* Forms */
 
 .fi-input-wrp {
@@ -58,6 +72,11 @@ input[type=radio].fi-radio-input {
 }
 
 input[type=checkbox].fi-checkbox-input:disabled {
+    @apply shadow-none inset-shadow-none;
+}
+
+input[type=radio].fi-radio-input:checked,
+input[type=checkbox].fi-checkbox-input:checked {
     @apply shadow-none inset-shadow-none;
 }
 
