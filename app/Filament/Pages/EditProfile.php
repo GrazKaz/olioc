@@ -44,7 +44,7 @@ class EditProfile extends Page implements HasForms
     {
         $this->user = auth()->user();
 
-        $this->profileForm->fill($this->user->only(['username', 'name', 'surname', 'email', 'phone_number'ge]));
+        $this->profileForm->fill($this->user->only(['username', 'name', 'surname', 'email', 'phone_number']));
     }
 
     public function profileForm(Schema $form): Schema

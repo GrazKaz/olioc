@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\Register;
+use App\Filament\Pages\ChangePassword;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Pages\Info;
 use Filament\Actions\Action;
@@ -57,6 +58,10 @@ class AdminPanelProvider extends PanelProvider
                     ->label(__('Edit profile'))
                     ->url(fn (): string => EditProfile::getUrl())
                     ->icon('heroicon-o-user'),
+                Action::make('change-password')
+                    ->label(__('Change password'))
+                    ->url(fn (): string => ChangePassword::getUrl())
+                    ->icon('heroicon-o-lock-closed'),
                 Action::make('information')
                     ->label(__('Information'))
                     ->url(fn (): string => Info::getUrl())
